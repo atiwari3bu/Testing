@@ -15,12 +15,12 @@ import "io/ioutil"
 import "sort"
 
 // for sorting by key.
-type bykey []mr.keyvalue
+type ByKey []mr.KeyValue
 
 // for sorting by key.
-func (a bykey) len() int           { return len(a) }
-func (a bykey) swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a bykey) less(i, j int) bool { return a[i].key < a[j].key }
+func (a ByKey) Len() int           { return len(a) }
+func (a ByKey) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByKey) Less(i, j int) bool { return a[i].Key < a[j].Key }
 
 func main() {
 	if len(os.Args) < 3 {
@@ -29,6 +29,7 @@ func main() {
 	}
 
 	mapf, reducef := loadPlugin(os.Args[1])
+
 	//
 	// read each input file,
 	// pass it to Map,
@@ -36,7 +37,6 @@ func main() {
 	//
 	intermediate := []mr.KeyValue{}
 	for _, filename := range os.Args[2:] {
-        fmt.Printf("opening file : %v\n", filename)
 		file, err := os.Open(filename)
 		if err != nil {
 			log.Fatalf("cannot open %v", filename)
@@ -48,7 +48,6 @@ func main() {
 		file.Close()
 		kva := mapf(filename, string(content))
 		intermediate = append(intermediate, kva...)
-        p
 	}
 
 	//
@@ -58,18 +57,6 @@ func main() {
 	//
 
 	sort.Sort(ByKey(intermediate))
-    i := 0
-    for i < len(intermediate){
-		values := []string{}
-        values = append(values, intermediate[i].Value)
-        output := reducef(intermediate[i].Key, values)
-
-        fmt.Printf("%v %v\n", intermediate[i].Key, output)
-
-        i++
-    }
-
-    /*
 
 	oname := "mr-out-0"
 	ofile, _ := os.Create(oname)
@@ -97,7 +84,6 @@ func main() {
 	}
 
 	ofile.Close()
-    */
 }
 
 // load the application Map and Reduce functions

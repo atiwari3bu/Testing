@@ -16,14 +16,10 @@ import "strconv"
 
 type ExampleArgs struct {
 	X int
-    Worker_PID string
 }
 
 type ExampleReply struct {
 	Y int
-    File string
-    NReduce int
-    WorkerNum int
 }
 
 // Add your RPC definitions here.
